@@ -1,14 +1,10 @@
 from fastapi import Header, HTTPException
+from jose import jwt
 
-from app.utils.token_verifier import (
-    verify_token
-)
+SECRET_KEY = "supersecretkey"
+ALGORITHM = "HS256"
 
-def get_current_user(
-    authorization: str = Header(None)
-):
-    print("AUTH HEADER:", authorization)
-
+def get_current_user(authorization: str = Header(None)):
     if not authorization:
         raise HTTPException(
             status_code=401,
@@ -16,16 +12,24 @@ def get_current_user(
         )
 
     try:
-        token = authorization.split(" ")[1]
+        scheme, token = authorization.split()
 
-    except:
-        raise HTTPException(
-            status_code=401,
-            detail="Invalid token format"
+        if scheme.lower() != "bearer":
+            raise HTTPException(
+                status_code=401,
+                detail="Invalid auth scheme"
+            )
+
+        payload = jwt.decode(
+            token,
+            SECRET_KEY,
+            algorithms=[ALGORITHM]
         )
 
-    payload = verify_token(token)
+        return payload
 
-    print("DECODED PAYLOAD:", payload)
-
-    return payload
+    except Exception:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid or expired token"
+        )
