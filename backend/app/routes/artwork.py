@@ -3,7 +3,8 @@ from fastapi import (
     UploadFile,
     File,
     Form,
-    Depends
+    Depends,
+    HTTPException
 )
 
 from sqlalchemy.orm import Session
@@ -11,7 +12,12 @@ from sqlalchemy.orm import Session
 import cloudinary.uploader
 
 from app.database.db_dependency import get_db
+
 from app.models.artwork import Artwork
+
+from app.utils.auth_dependency import (
+    get_current_user
+)
 
 import app.utils.cloudinary_config
 
@@ -27,8 +33,11 @@ async def upload_artwork(
     genre: str = Form(...),
     price: float = Form(...),
     file: UploadFile = File(...),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user)
 ):
+    print("CURRENT USER:", current_user)
+
     upload_result = cloudinary.uploader.upload(
         file.file
     )
@@ -52,7 +61,7 @@ async def upload_artwork(
     return {
         "message": "Artwork uploaded successfully",
         "image_url": image_url,
-        "artwork_id": new_artwork.id
+        "uploaded_by": current_user["email"]
     }
 
 @router.get("/")

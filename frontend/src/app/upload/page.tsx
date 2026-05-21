@@ -31,16 +31,22 @@ export default function UploadPage() {
       return
     }
 
-    const formData = new FormData()
-
-    formData.append("title", title)
-    formData.append("description", description)
-    formData.append("genre", genre)
-    formData.append("price", price)
-    formData.append("file", file)
-
     try {
       const token = localStorage.getItem("token")
+
+      if (!token) {
+        alert("Please login first")
+        router.push("/login")
+        return
+      }
+
+      const formData = new FormData()
+
+      formData.append("title", title)
+      formData.append("description", description)
+      formData.append("genre", genre)
+      formData.append("price", price)
+      formData.append("file", file)
 
       const response = await axios.post(
         "http://127.0.0.1:8000/artworks/upload",
@@ -52,9 +58,9 @@ export default function UploadPage() {
         }
       )
 
-      alert("Artwork uploaded successfully")
-
       console.log(response.data)
+
+      alert("Artwork uploaded successfully")
 
       setTitle("")
       setDescription("")
@@ -64,6 +70,7 @@ export default function UploadPage() {
 
     } catch (error) {
       console.error(error)
+
       alert("Upload failed")
     }
   }
@@ -86,7 +93,6 @@ export default function UploadPage() {
             setTitle(e.target.value)
           }
           className="w-full p-3 rounded bg-zinc-900"
-          required
         />
 
         <textarea
@@ -96,7 +102,6 @@ export default function UploadPage() {
             setDescription(e.target.value)
           }
           className="w-full p-3 rounded bg-zinc-900"
-          required
         />
 
         <input
@@ -107,7 +112,6 @@ export default function UploadPage() {
             setGenre(e.target.value)
           }
           className="w-full p-3 rounded bg-zinc-900"
-          required
         />
 
         <input
@@ -118,7 +122,6 @@ export default function UploadPage() {
             setPrice(e.target.value)
           }
           className="w-full p-3 rounded bg-zinc-900"
-          required
         />
 
         <input
@@ -130,7 +133,6 @@ export default function UploadPage() {
             }
           }}
           className="w-full"
-          required
         />
 
         <button
