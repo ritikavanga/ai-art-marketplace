@@ -1,14 +1,25 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import axios from "axios"
+import { useRouter } from "next/navigation"
 
 export default function UploadPage() {
+  const router = useRouter()
+
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
   const [genre, setGenre] = useState("")
   const [price, setPrice] = useState("")
   const [file, setFile] = useState<File | null>(null)
+
+  useEffect(() => {
+    const token = localStorage.getItem("token")
+
+    if (!token) {
+      router.push("/login")
+    }
+  }, [router])
 
   const handleUpload = async (
     e: React.FormEvent
@@ -29,14 +40,21 @@ export default function UploadPage() {
     formData.append("file", file)
 
     try {
+      const token = localStorage.getItem("token")
+
       const response = await axios.post(
         "http://127.0.0.1:8000/artworks/upload",
-        formData
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
       )
 
-      console.log(response.data)
-
       alert("Artwork uploaded successfully")
+
+      console.log(response.data)
 
       setTitle("")
       setDescription("")
@@ -68,6 +86,7 @@ export default function UploadPage() {
             setTitle(e.target.value)
           }
           className="w-full p-3 rounded bg-zinc-900"
+          required
         />
 
         <textarea
@@ -77,6 +96,7 @@ export default function UploadPage() {
             setDescription(e.target.value)
           }
           className="w-full p-3 rounded bg-zinc-900"
+          required
         />
 
         <input
@@ -87,6 +107,7 @@ export default function UploadPage() {
             setGenre(e.target.value)
           }
           className="w-full p-3 rounded bg-zinc-900"
+          required
         />
 
         <input
@@ -97,6 +118,7 @@ export default function UploadPage() {
             setPrice(e.target.value)
           }
           className="w-full p-3 rounded bg-zinc-900"
+          required
         />
 
         <input
@@ -108,6 +130,7 @@ export default function UploadPage() {
             }
           }}
           className="w-full"
+          required
         />
 
         <button
