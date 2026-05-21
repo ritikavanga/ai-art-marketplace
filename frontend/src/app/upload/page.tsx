@@ -34,9 +34,9 @@ export default function UploadPage() {
         formData
       )
 
-      alert("Artwork uploaded successfully")
-
       console.log(response.data)
+
+      alert("Artwork uploaded successfully")
 
       setTitle("")
       setDescription("")
