@@ -30,19 +30,37 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-black text-white p-10">
+      {/* Navbar */}
       <div className="flex items-center justify-between mb-10">
         <h1 className="text-5xl font-bold">
           AI Art Marketplace
         </h1>
 
-        <a
-          href="/upload"
-          className="bg-white text-black px-5 py-3 rounded-lg font-semibold"
-        >
-          Upload Art
-        </a>
+        <div className="flex gap-4">
+          <a
+            href="/login"
+            className="bg-zinc-800 px-5 py-3 rounded-lg"
+          >
+            Login
+          </a>
+
+          <a
+            href="/register"
+            className="bg-white text-black px-5 py-3 rounded-lg font-semibold"
+          >
+            Register
+          </a>
+
+          <a
+            href="/upload"
+            className="bg-purple-600 px-5 py-3 rounded-lg font-semibold"
+          >
+            Upload Art
+          </a>
+        </div>
       </div>
 
+      {/* Artwork Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {artworks.map((artwork) => (
           <ArtworkCard
